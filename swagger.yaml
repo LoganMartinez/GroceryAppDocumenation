@@ -40,6 +40,23 @@ paths:
                   $ref: '#/components/schemas/Store'
         '400':
           description: Invalid zip code value
+          
+  /items/:
+    get:
+      tags:
+        - items
+      summary: get all items
+      description: Returns list of every unique item
+      operationId: getItems
+      responses:
+        '200':
+          description: succesful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Item'
   
   /itemSearch/:
     get:

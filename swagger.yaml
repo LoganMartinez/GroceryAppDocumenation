@@ -3,7 +3,7 @@ info:
   title: Grocery Project
   description: |-
     API documentation for Web Apps Grocery application. This application finds the most cost effective store to go to given a cart of items
-  version: 1.0.1
+  version: 1.0.0
 servers:
   - url: http://groceryapp.com
 tags:
@@ -132,11 +132,14 @@ components:
     CalculateCartRequest:
       type: object
       properties:
-        storeIds:
-          type: array
-          items:
-            type: integer
-            example: 141234
+        # storeIds:
+        #   type: array
+        #   items:
+        #     type: integer
+        #     example: 141234
+        zipCode:
+          type: integer
+          example: 77095
         itemIds:
           type: array
           items:

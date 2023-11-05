@@ -7,56 +7,41 @@ info:
 servers:
   - url: http://groceryapp.com
 tags:
-  - name: stores
-    description: Information about stores
+  # - name: stores
+  #   description: Information about stores
   - name: items
     description: available items
   - name: cart
     description: cart calculations
+  - name: user
+    description: User login and preferences (optional)
 paths:
-  /stores/:
-    get:
-      tags:
-        - stores
-      summary: Find nearby stores
-      description: Find stores in same zip code
-      operationId: findStoresByZip
-      parameters:
-        - name: zipCode
-          in: query
-          description: stores will be filtered by this.
-          required: true
-          explode: true
-          schema:
-            type: number
-      responses:
-        '200':
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Store'
-        '400':
-          description: Invalid zip code value
-          
-  /items/:
-    get:
-      tags:
-        - items
-      summary: get all items
-      description: Returns list of every unique item
-      operationId: getItems
-      responses:
-        '200':
-          description: succesful operation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Item'
+  # /stores/:
+  #   get:
+  #     tags:
+  #       - stores
+  #     summary: Find nearby stores
+  #     description: Find stores in same zip code
+  #     operationId: findStoresByZip
+  #     parameters:
+  #       - name: zipCode
+  #         in: query
+  #         description: stores will be filtered by this.
+  #         required: true
+  #         explode: true
+  #         schema:
+  #           type: number
+  #     responses:
+  #       '200':
+  #         description: successful operation
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: array
+  #               items:
+  #                 $ref: '#/components/schemas/Store'
+  #       '400':
+  #         description: Invalid zip code value
   
   /itemSearch/:
     get:
@@ -105,6 +90,105 @@ paths:
                   $ref: '#/components/schemas/CartCost'
         '400':
           description: request contains some 
+          
+  /validateUser/:
+    post:
+      tags:
+        - user
+      summary: Login
+      description: Checks if user credentials are valid and returns a login token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/validateRequest'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                    example: username
+                  token:
+                    type: string
+                    example: "1231237123891273912"
+                    
+  /favorites/:
+    get:
+      tags:
+        - user
+      summary: gets users favorited items
+      parameters:
+        - name: username
+          example: "lmartin9"
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                    example: "lmartin9"
+                  favortes:
+                    type: array
+                    items: 
+                      $ref: '#/components/schemas/Item'
+  
+  /addFavorite/:
+    post:
+      tags:
+        - user
+      summary: adds item to favorites list
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/favoriteItemRequest'
+      responses:
+        '201':
+          description: successful operation
+          
+          
+  /createUser/:
+    post:
+      tags:
+        - user
+      summary: creates new user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/validateRequest'
+      responses:
+        '201':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                    example: username
+                  token:
+                    type: string
+                    example: "1231237123891273912"
+          
+          
+                      
+            
+  
 components:
   schemas:
     Store:
@@ -128,6 +212,19 @@ components:
         name:
           type: string
           example: "Banana"
+        unit:
+          type: string
+          example: "lb"
+        amount:
+          type: number
+          example: 5
+        image:
+          type: string
+          example: http://linktoimage.com
+        category:
+          type: string
+          example: produce
+          
           
     CalculateCartRequest:
       type: object
@@ -172,4 +269,25 @@ components:
               cost:
                 type: number
                 example: 2.50
+                
+    validateRequest:
+      type: object
+      properties:
+        username:
+          example: "username"
+          type: string
+        password:
+          example: "Password123!"
+          type: string
+          
+          
+    favoriteItemRequest:
+      type: object
+      properties:
+        username:
+          example: "username"
+          type: string
+        itemId:
+          type: integer
+          example: 323212
         
